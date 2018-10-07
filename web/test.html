@@ -1,0 +1,79 @@
+<html>
+<meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+username: <input class="username" type="text" name="username" />  <br>
+
+password: <input  class="password" type="text" name="password"/>
+    <button  class="btn">post</button>
+    <button  class="btn2">get</button>
+<div class="msg"></div>
+    <!--<script src="./js/jquery.min.js"></script>-->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+//            let baseUrl = "http://192.168.2.134:8081";
+            let baseUrl = "";
+            $(".btn").click(function(){
+                let input1 = $('.username').val().trim();
+                let input2 = $('.password').val().trim();
+                if(input1.length>1 && input2.length>1){
+                    let _data = {
+                        username: input1,
+                        password: input2
+                    };
+                    $.ajax({
+                        data:_data,
+                        type: 'POST',
+                        dataType:"json",
+                        url: baseUrl+"/process_post",
+                        success:function (res) {
+                            console.log(res);
+                            if(parseInt(res.errcode)===0){
+                                if(res.data.name){
+                                    alert("登陆成功");
+                                }else {
+                                    alert("账号或密码错误")
+                                }
+                            }else {
+                                alert(res.msg);
+                            }
+                        },
+                        error:function (err) {
+                            console.log(err)
+                        }
+                    });
+                }
+            });
+            $(".btn2").click(function () {
+                let input1 = $('.username').val().trim();
+                let input2 = $('.password').val().trim();
+                if(input1.length>0 && input2.length>0){
+                    let _data = {
+                        username: input1,
+                        password: input2
+                    };
+                    $.get(baseUrl+"/process_get",_data,function(resp){
+//                        console.log(resp);
+                        resp = JSON.parse(resp);
+                        console.log(resp);
+                        if(parseInt(resp.errcode)===0){
+                            if(resp.data.name){
+                                alert("登陆成功");
+                            }else {
+                                alert("账号或密码错误")
+                            }
+                        }else {
+                            alert(resp.msg);
+                            console.log(typeof resp);
+                        }
+                    });
+                }
+            })
+        })
+    </script>
+</body>
+</html>
